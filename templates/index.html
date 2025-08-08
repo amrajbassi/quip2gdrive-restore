@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quip Migration Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #1d4ed8;
+            --success-color: #10b981;
+            --info-color: #06b6d4;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            min-height: 100vh;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            transform: translateY(-1px);
+        }
+
+        .hero-section {
+            padding: 4rem 0 2rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info-color), #0891b2);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-group .btn {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .method-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .method-get {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+        }
+
+        .method-post {
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            color: #991b1b;
+        }
+
+        .endpoint-item {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .endpoint-item:hover {
+            background: #f1f5f9;
+            border-color: var(--primary-color);
+        }
+
+        .response-area {
+            background: var(--dark-color);
+            color: #e5e7eb;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            min-height: 200px;
+            max-height: 400px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .search-results {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            margin-top: 1rem;
+        }
+
+        .result-section h5 {
+            color: var(--dark-color);
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .result-info {
+            background: var(--dark-color);
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .container-fluid {
+            max-width: 1400px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-cloud-arrow-up"></i> Quip Migration
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="bi bi-house"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/google-drive-files">
+                            <i class="bi bi-folder2-open"></i> Google Drive Files
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <i class="bi bi-gear"></i> Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Quip 2 Google Drive File Restore</h1>
+            <p class="hero-subtitle">Lost a file in the Quip Migration? No problem. We'll help you restore it to Google Drive.</p>
+        </div>
+    </div>
+
+    <div class="container-fluid py-4">
+        <div class="row g-4">
+
+            <!-- Document Search -->
+            <div class="col-12">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-search"></i> Document Search
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row align-items-end">
+                            <div class="col-md-10">
+                                <label for="searchInput" class="form-label fw-semibold">Search:</label>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Enter Quip Document ID or paste Google Doc URL...">
+                                <div class="form-text mt-1">
+                                    <i class="bi bi-info-circle"></i> 
+                                    You can enter a Quip Document ID or paste a Google Doc URL (e.g., https://docs.google.com/document/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit)
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button id="searchBtn" class="btn btn-primary w-100">
+                                    <i class="bi bi-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                        <div class="search-results" id="searchResults" style="display: none;">
+                            <div class="result-section">
+                                <h5><i class="bi bi-file-text"></i> Quip Document</h5>
+                                <div id="quipDocumentInfo" class="result-info"></div>
+                            </div>
+                            <div class="result-section mt-3">
+                                <h5><i class="bi bi-google"></i> Google Drive File</h5>
+                                <div id="googleDriveInfo" class="result-info"></div>
+                            </div>
+                            <div class="result-section mt-3">
+                                <h5><i class="bi bi-download"></i> Restore Document</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <button id="restoreDocx" class="btn btn-success w-100" disabled>
+                                            <i class="bi bi-file-earmark-word"></i> Download as DOCX
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button id="restorePdf" class="btn btn-danger w-100" disabled>
+                                            <i class="bi bi-file-earmark-pdf"></i> Download as PDF
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button id="restoreHtml" class="btn btn-info w-100" disabled>
+                                            <i class="bi bi-file-earmark-code"></i> Download as HTML
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="restoreStatus" class="mt-3" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-lightning"></i> Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <a href="/google-drive-files" class="btn btn-info w-100">
+                                    <i class="bi bi-folder2-open"></i> Browse Google Drive Files
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="/admin" class="btn btn-secondary w-100">
+                                    <i class="bi bi-gear"></i> Admin Dashboard
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <button id="quickStats" class="btn btn-primary w-100">
+                                    <i class="bi bi-graph-up"></i> View Statistics
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-question-circle"></i> How It Works
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-search" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                    <h6 class="mt-2">1. Search</h6>
+                                    <p class="text-muted">Enter a Quip Document ID or paste a Google Doc URL to find your file.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-arrow-left-right" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                    <h6 class="mt-2">2. Match</h6>
+                                    <p class="text-muted">The system finds the corresponding file in the other platform.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-download" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                    <h6 class="mt-2">3. Restore</h6>
+                                    <p class="text-muted">Access your file information and restore it to Google Drive.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 

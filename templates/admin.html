@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Quip Migration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #1d4ed8;
+            --success-color: #10b981;
+            --info-color: #06b6d4;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            min-height: 100vh;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            transform: translateY(-1px);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .hero-section {
+            padding: 4rem 0 2rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info-color), #0891b2);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+        }
+
+        .method-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .method-get {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+        }
+
+        .method-post {
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            color: #991b1b;
+        }
+
+        .endpoint-item {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .endpoint-item:hover {
+            background: #f1f5f9;
+            border-color: var(--primary-color);
+        }
+
+        .response-area {
+            background: var(--dark-color);
+            color: #e5e7eb;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            min-height: 200px;
+            max-height: 400px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .container-fluid {
+            max-width: 1400px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-cloud-arrow-up"></i> Quip Migration
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/google-drive-files">
+                            <i class="bi bi-folder2-open"></i> Google Drive Files
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin">
+                            <i class="bi bi-gear"></i> Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Admin Dashboard</h1>
+            <p class="hero-subtitle">System administration and monitoring tools</p>
+        </div>
+    </div>
+
+    <div class="container-fluid py-4">
+        <div class="row g-4">
+            <!-- Statistics Dashboard -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-graph-up"></i> Migration Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card">
+                                    <span class="stat-number" id="totalDocs">-</span>
+                                    <div class="stat-label">Total Documents</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card">
+                                    <span class="stat-number" id="pendingDocs">-</span>
+                                    <div class="stat-label">Pending</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card">
+                                    <span class="stat-number" id="migratedDocs">-</span>
+                                    <div class="stat-label">Migrated</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="stat-card">
+                                    <span class="stat-number" id="failedDocs">-</span>
+                                    <div class="stat-label">Failed</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button id="refreshStats" class="btn btn-primary">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh Statistics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Operations -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-database"></i> Database Operations
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-grid gap-3">
+                            <button id="healthCheck" class="btn btn-primary">
+                                <i class="bi bi-heart-pulse"></i> Database Health Check
+                            </button>
+                            <button id="getDocuments" class="btn btn-secondary">
+                                <i class="bi bi-files"></i> Get Documents
+                            </button>
+                            <button id="getLogs" class="btn btn-info">
+                                <i class="bi bi-journal-text"></i> Get Migration Logs
+                            </button>
+                            <button id="importDump" class="btn btn-success">
+                                <i class="bi bi-upload"></i> Import SQL Dump (from project root)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Endpoints -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-code-slash"></i> API Endpoints
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-get me-3">GET</span>
+                                        <code class="flex-grow-1">/api/health</code>
+                                        <small class="text-muted ms-2">Health check with DB status</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-get me-3">GET</span>
+                                        <code class="flex-grow-1">/api/documents</code>
+                                        <small class="text-muted ms-2">Get all Quip documents</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-get me-3">GET</span>
+                                        <code class="flex-grow-1">/api/documents/{id}</code>
+                                        <small class="text-muted ms-2">Get specific document</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-get me-3">GET</span>
+                                        <code class="flex-grow-1">/api/search?document_id={id}</code>
+                                        <small class="text-muted ms-2">Search document & Google Drive file</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-get me-3">GET</span>
+                                        <code class="flex-grow-1">/api/google-drive-files</code>
+                                        <small class="text-muted ms-2">Get all Google Drive files</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-get me-3">GET</span>
+                                        <code class="flex-grow-1">/api/migration-logs</code>
+                                        <small class="text-muted ms-2">Get migration logs</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-get me-3">GET</span>
+                                        <code class="flex-grow-1">/api/stats</code>
+                                        <small class="text-muted ms-2">Get migration statistics</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="endpoint-item">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge method-badge method-post me-3">POST</span>
+                                        <code class="flex-grow-1">/api/import-dump</code>
+                                        <small class="text-muted ms-2">Import SQL dump file from project root</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Area -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-terminal"></i> Response Log
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="response" class="response-area">Ready to make API calls...</div>
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <button id="clearResponse" class="btn btn-secondary">
+                                <i class="bi bi-trash"></i> Clear Log
+                            </button>
+                            <button id="exportResponse" class="btn btn-info">
+                                <i class="bi bi-download"></i> Export JSON
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html> 
